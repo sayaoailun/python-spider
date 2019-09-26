@@ -9,6 +9,7 @@
 
 - 串行爬取：[dangdang.py](dangdang/dangdang.py)
 - 并发爬取：[dangdang_multiThread.py](dangdang/dangdang_multiThread.py)
+- 并发爬取(存入excel)：[dangdang_multiThread_excel.py](dangdang/dangdang_multiThread_excel.py)
 
 ## jd
 
