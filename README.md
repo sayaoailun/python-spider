@@ -4,6 +4,7 @@
 
 - 串行爬取：[amazon.py](amazon/amazon.py)
 - 并发爬取：[amazon_multiThread_lun.py](amazon/amazon_multiThread_lun.py)
+- 并发爬取(存入excel)：[amazon_multiThread_excel.py](amazon/amazon_multiThread_excel.py)
 
 ## dangdang
 
