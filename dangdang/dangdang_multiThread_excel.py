@@ -97,12 +97,15 @@ class Spider:
 		# 不使用代理
 		UA = random.choice(self.user_agent_list)
 		headers = {'User-Agent': UA}
-		response = requests.get(self.url, headers = headers)
+		response = requests.get(self.url, headers = headers, allow_redirects = False)
 		response.raise_for_status()
-		response.encoding = 'gbk'
-		soup = bs4.BeautifulSoup(response.text, 'html.parser')
-		taglist = soup.select('ul[class="bang_list clearfix bang_list_mode"] > li')
-		return taglist
+		if response.status_code == 302:
+			return []
+		else:
+			response.encoding = 'gbk'
+			soup = bs4.BeautifulSoup(response.text, 'html.parser')
+			taglist = soup.select('ul[class="bang_list clearfix bang_list_mode"] > li')
+			return taglist
 
 	def bookInfo(self, bookTag):
 		try:
@@ -193,15 +196,16 @@ class Spider:
 			thread.start()
 			threadPool.put(thread)
 			threads.append(thread)
+		return taglist
 
 def write(sheetAndUrl, file):
 	wb = openpyxl.Workbook()
 	for sheet in sorted(sheetAndUrl):
-		urlTemplate = sheetAndUrl[sheet]['url']
-		pageSize = sheetAndUrl[sheet]['pageSize']
-		for x in range(1,pageSize+1):
+		urlTemplate = sheetAndUrl[sheet]
+		for x in range(1,6):
 			spider = Spider(urlTemplate % x, sheet)
-			spider.bookQueue()
+			if len(spider.bookQueue()) == 0:
+				break
 		for x in threads:
 			x.join()
 		bookDict = {}
@@ -227,6 +231,6 @@ def write(sheetAndUrl, file):
 
 if __name__ == '__main__':
 	sheetAndUrl = {}
-	sheetAndUrl['图书畅销榜'] = {'url':'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-recent7-0-0-1-%s','pageSize':5}
-	sheetAndUrl['英文原版图书畅销榜'] = {'url':'http://bang.dangdang.com/books/bestsellers/01.58.00.00.00.00-recent7-0-0-1-%s','pageSize':3}
+	sheetAndUrl['图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-recent7-0-0-1-%s'
+	sheetAndUrl['英文原版图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.58.00.00.00.00-recent7-0-0-1-%s'
 	write(sheetAndUrl, 'dangdang.xlsx')
