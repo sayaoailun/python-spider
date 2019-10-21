@@ -232,5 +232,8 @@ def write(sheetAndUrl, file):
 if __name__ == '__main__':
 	sheetAndUrl = {}
 	sheetAndUrl['图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.00.00.00.00.00-recent7-0-0-1-%s'
+	sheetAndUrl['小说图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.03.00.00.00.00-recent7-0-0-1-%s'
+	sheetAndUrl['文学图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.05.00.00.00.00-recent7-0-0-1-%s'
+	sheetAndUrl['外语图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.45.00.00.00.00-recent7-0-0-1-%s'
 	sheetAndUrl['英文原版图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.58.00.00.00.00-recent7-0-0-1-%s'
 	write(sheetAndUrl, 'dangdang.xlsx')
