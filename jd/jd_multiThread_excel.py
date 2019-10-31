@@ -7,7 +7,7 @@ logging.basicConfig(handlers=[logging.StreamHandler(sys.stdout), logging.FileHan
 
 import requests, bs4, re, json, csv, threading, queue, time, random, openpyxl
 
-threadPoolSize = 20
+threadPoolSize = 10
 threadPool = queue.Queue()
 bookQueue = queue.Queue()
 threads = []
@@ -106,13 +106,26 @@ class Spider:
 		book['m_price'] = json.loads(priceResponse.text)[0].get('m')
 
 		#获取 book ISBN等信息
-		UA = random.choice(self.user_agent_list)
-		headers = {'User-Agent': UA}
-		bookUrl = 'http://item.jd.com/%s.html' % book['id']
-		book['url'] = bookUrl
-		bookResponse = requests.get(bookUrl, headers = headers)
-		bookResponse.raise_for_status()
-		bookResponse.encoding = 'gbk'
+		while True:
+			UA = random.choice(self.user_agent_list)
+			headers = {'User-Agent': UA}
+			bookUrl = 'http://item.jd.com/%s.html' % book['id']
+			book['url'] = bookUrl
+			bookResponse = requests.get(bookUrl, headers = headers)
+			bookResponse.raise_for_status()
+			bookResponse.encoding = 'gbk'
+			if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul[id="parameter2"] > li')) > 0:
+				break
+			time.sleep(30)
+		# UA = random.choice(self.user_agent_list)
+		# headers = {'User-Agent': UA}
+		# bookUrl = 'http://item.jd.com/%s.html' % book['id']
+		# book['url'] = bookUrl
+		# bookResponse = requests.get(bookUrl, headers = headers)
+		# bookResponse.raise_for_status()
+		# bookResponse.encoding = 'gbk'
+		# if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul[id="parameter2"] > li')) > 0:
+		# 	break
 		for x in bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul[id="parameter2"] > li'):
 			if x.getText().find('ISBN') != -1:
 				book['isbn'] = x.get('title')
@@ -181,7 +194,12 @@ def write(sheetAndUrl, file):
 				book = bookDict[' 0%s ' % (x - 1)]
 			else:
 				book = bookDict[' %s ' % (x - 1)]
-			content = [book['num'], book['name'], book['price'], book['m_price'], str(book['authors']), book['press'], book['id'], book['isbn'], book['class'], book['version'], book['size'], book['time'], book['page'], book['language']]
+			try:
+				content = [book['num'], book['name'], book['price'], book['m_price'], str(book['authors']), book['press'], book['id'], book['isbn'], book['class'], book['version'], book['size'], book['time'], book['page'], book['language']]
+			except Exception as e:
+				logging.info(book)
+				raise e
+			# content = [book['num'], book['name'], book['price'], book['m_price'], str(book['authors']), book['press'], book['id'], book['isbn'], book['class'], book['version'], book['size'], book['time'], book['page'], book['language']]
 			for i in range(len(content)):
 				c = ws.cell(row=x,column=i+1)
 				c.value = content[i]
