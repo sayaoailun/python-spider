@@ -112,7 +112,13 @@ class Spider:
 			bookUrl = 'http://item.jd.com/%s.html' % book['id']
 			book['url'] = bookUrl
 			bookResponse = requests.get(bookUrl, headers = headers)
-			bookResponse.raise_for_status()
+			try:
+				bookResponse.raise_for_status()
+			except Exception as e:
+				logging.info(e)
+				time.sleep(30)
+				continue
+			# bookResponse.raise_for_status()
 			bookResponse.encoding = 'gbk'
 			if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul[id="parameter2"] > li')) > 0:
 				break
