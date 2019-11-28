@@ -97,10 +97,20 @@ class Spider:
 		book['press'] = bs4.BeautifulSoup(str(detail[1]), 'html.parser').select('dd > a')[0].get('title')
 
 		#获取 book price
-		UA = random.choice(self.user_agent_list)
-		headers = {'User-Agent': UA}
-		priceUrl = 'http://p.3.cn/prices/get?skuid=%s' % book['id']
-		priceResponse = requests.get(priceUrl, headers = headers)
+		# UA = random.choice(self.user_agent_list)
+		# headers = {'User-Agent': UA}
+		# priceUrl = 'http://p.3.cn/prices/get?skuid=%s' % book['id']
+		while True:
+			try:
+				UA = random.choice(self.user_agent_list)
+				headers = {'User-Agent': UA}
+				priceUrl = 'http://p.3.cn/prices/get?skuid=%s' % book['id']
+				priceResponse = requests.get(priceUrl, headers = headers)
+				break;
+			except Exception as e:
+				logging.info(e)
+				time.sleep(30)
+		# priceResponse = requests.get(priceUrl, headers = headers)
 		priceResponse.raise_for_status()
 		book['price'] = json.loads(priceResponse.text)[0].get('p')
 		book['m_price'] = json.loads(priceResponse.text)[0].get('m')
