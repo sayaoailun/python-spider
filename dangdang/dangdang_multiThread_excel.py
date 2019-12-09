@@ -90,6 +90,8 @@ class Spider:
 			book['language'] = '-'
 		if book.get('isbn') == None:
 			book['isbn'] = '-'
+		if book.get('class') == None:
+			book['class'] = '-'
 
 	def tagList(self):
 		# 使用代理
@@ -152,7 +154,18 @@ class Spider:
 			UA = random.choice(self.user_agent_list)
 			headers = {'User-Agent': UA}
 			bookresponse = requests.get(bookurl, headers = headers)
-			bookresponse.raise_for_status()
+			# bookresponse.raise_for_status()
+			try:
+				bookresponse.raise_for_status()
+			except Exception as e:
+				if bookresponse.status_code == 404:
+					self.fulfillBook(book)
+					bookQueue.put(book)
+					threadPool.get()
+					logging.info(book)
+					return book
+				else:
+					raise e
 			bookresponse.encoding = 'gbk'
 			booksoup = bs4.BeautifulSoup(bookresponse.text, 'html.parser')
 			bookcontent = booksoup.select('ul[class="key clearfix"] > li')
