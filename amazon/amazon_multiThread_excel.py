@@ -114,6 +114,14 @@ class Spider:
 			book['language'] = '-'
 		if book.get('press') == None:
 			book['press'] = '-'
+		if book.get('url') == None:
+			book['url'] = '-'
+		if book.get('name') == None:
+			book['name'] = '-'
+		if book.get('price') == None:
+			book['price'] = '-'
+		if book.get('num') == None:
+			book['num'] = '-'
 
 	def tagList(self):
 		UA = random.choice(self.user_agent_list)
@@ -132,11 +140,17 @@ class Spider:
 	def bookInfo(self, bookTag):
 		book = {}
 		soup = bs4.BeautifulSoup(str(bookTag), 'html.parser')
-		book['url'] = self.amazonUrl + soup.select('span[class="aok-inline-block zg-item"] > a[class="a-link-normal"]')[0].get('href')
-		book['name'] = soup.select('span > div > img')[0].get("alt").replace('・', '·').replace('•', '·').replace('\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
-		# book['authors'] = soup.select('span[class="a-size-small a-color-base"]')[0].getText().replace('\x85', '...').replace('•', '·')
-		book['price'] = soup.select('span[class="p13n-sc-price"]')[0].getText().replace('￥', '')
-		book['num'] = soup.select('span[class="zg-badge-text"]')[0].getText().replace('#', '')
+		try:
+			book['url'] = self.amazonUrl + soup.select('span[class="aok-inline-block zg-item"] > a[class="a-link-normal"]')[0].get('href')
+			book['name'] = soup.select('span > div > img')[0].get("alt").replace('・', '·').replace('•', '·').replace('\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
+			# book['authors'] = soup.select('span[class="a-size-small a-color-base"]')[0].getText().replace('\x85', '...').replace('•', '·')
+			book['price'] = soup.select('span[class="p13n-sc-price"]')[0].getText().replace('￥', '')
+			book['num'] = soup.select('span[class="zg-badge-text"]')[0].getText().replace('#', '')
+		except Exception as e:
+			logging.info(soup)
+			# raise e
+			fulfillBook(book)
+		
 
 		# 获取书籍详情
 		notfind = True
