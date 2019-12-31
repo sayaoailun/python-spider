@@ -231,4 +231,4 @@ if __name__ == '__main__':
 	sheetAndUrl['jd图书销量榜'] = 'https://book.jd.com/booktop/0-0-0.html?category=1713-0-0-0-10002-%s#comfort'
 	sheetAndUrl['jd小说文学图书销量榜'] = 'https://book.jd.com/booktop/0-0-0.html?category=20002-0-0-0-10002-%s#comfort'
 	sheetAndUrl['jd原版图书销量榜'] = 'https://book.jd.com/booktop/0-0-0.html?category=20008-0-0-0-10002-%s#comfort'
-	write(sheetAndUrl, 'jd.xlsx')
+	write(sheetAndUrl, 'jd-%s.xlsx' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
