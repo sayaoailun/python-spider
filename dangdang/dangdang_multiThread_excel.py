@@ -249,4 +249,4 @@ if __name__ == '__main__':
 	sheetAndUrl['文学图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.05.00.00.00.00-recent7-0-0-1-%s'
 	sheetAndUrl['外语图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.45.00.00.00.00-recent7-0-0-1-%s'
 	sheetAndUrl['英文原版图书畅销榜'] = 'http://bang.dangdang.com/books/bestsellers/01.58.00.00.00.00-recent7-0-0-1-%s'
-	write(sheetAndUrl, 'dangdang-%s.xlsx' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+	write(sheetAndUrl, 'dangdang-%s.xlsx' % time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time())))

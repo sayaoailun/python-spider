@@ -283,4 +283,4 @@ if __name__ == '__main__':
 	sheetAndUrl['文学'] = 'https://www.amazon.cn/gp/bestsellers/digital-text/144180071'
 	sheetAndUrl['英语'] = 'https://www.amazon.cn/gp/bestsellers/digital-text/143324071'
 	sheetAndUrl['原版'] = 'https://www.amazon.cn/gp/bestsellers/digital-text/116170071'
-	write(sheetAndUrl, 'amazon-%s.xlsx' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+	write(sheetAndUrl, 'amazon-%s.xlsx' % time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time())))
