@@ -159,8 +159,13 @@ class Spider:
 			UA = random.choice(self.user_agent_list)
 			headers = {'User-Agent': UA}
 			headers['Cookie'] = random.choice(cookie)
-			response = requests.get(book['url'], headers = headers)
-			response.raise_for_status()
+			try:
+				response = requests.get(book['url'], headers = headers)
+				response.raise_for_status()
+			except Exception as e:
+				logging.info(e)
+				notfind = False
+				continue
 			response.encoding = 'utf-8'
 			soup = bs4.BeautifulSoup(response.text, 'html.parser')
 			if len(soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')) == 0:
