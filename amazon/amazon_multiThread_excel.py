@@ -150,7 +150,7 @@ class Spider:
 			logging.info(soup)
 			# raise e
 			fulfillBook(book)
-		
+
 
 		# 获取书籍详情
 		notfind = True
@@ -164,7 +164,8 @@ class Spider:
 				response.raise_for_status()
 			except Exception as e:
 				logging.info(e)
-				notfind = False
+				time.sleep(30)
+				notfind = True
 				continue
 			response.encoding = 'utf-8'
 			soup = bs4.BeautifulSoup(response.text, 'html.parser')
@@ -175,6 +176,8 @@ class Spider:
 				count += 1
 				logging.info('oops!%s' % count)
 				_lock.release()
+				notfind = True
+				continue
 			else:
 				notfind = False
 		book['authors'] = soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')[0].getText().replace('\n', '').replace('・', '·').replace('•', '·').replace('\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
