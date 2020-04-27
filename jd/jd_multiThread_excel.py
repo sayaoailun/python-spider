@@ -131,7 +131,7 @@ class Spider:
 				time.sleep(30)
 				continue
 			# bookResponse.raise_for_status()
-			bookResponse.encoding = 'gbk'
+			# bookResponse.encoding = 'gbk'
 			if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul[id="parameter2"] > li')) > 0:
 				break
 			time.sleep(30)
