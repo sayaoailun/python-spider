@@ -124,6 +124,8 @@ def saveToDb(dirPath):
                     logging.info(book)
                     if '-' == book['page']:
                         book['page'] = 0
+                    if '-' == book['price']:
+                        book['price'] = 0
                     cursor.execute(insert, book)
             wb.close()
         if 'jd' == file['platform']:
@@ -169,6 +171,10 @@ def saveToDb(dirPath):
                     logging.info(book)
                     if '-' == book['page']:
                         book['page'] = 0
+                    if '-' == book['price_mark']:
+                        book['price_mark'] = 0
+                    if '-' == book['price_real']:
+                        book['price_real'] = 0
                     cursor.execute(insert, book)
             wb.close()
         if 'dangdang' == file['platform']:
@@ -207,6 +213,8 @@ def saveToDb(dirPath):
                         row=row, column=dangdangColumn['出版时间']).value
                     if '-' == book['price_mark']:
                         book['price_mark'] = 0
+                    if '-' == book['price_real']:
+                        book['price_real'] = 0
                     logging.info(book)
                     cursor.execute(insert, book)
             wb.close()
