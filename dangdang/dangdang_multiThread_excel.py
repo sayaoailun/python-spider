@@ -114,7 +114,7 @@ class Spider:
 			book = {}
 			rank = bookTag.select('div[class="list_num red"]')
 			if len(rank) == 0:
-				rank = bookTag.select('div[class="list_num "]')
+				rank = bookTag.select('div[class="list_num"]')
 			book['num'] = rank[0].getText()[:-1]
 
 			name = bookTag.select('div[class="name"] > a')
@@ -193,7 +193,7 @@ class Spider:
 			logging.info(bookTag)
 			os._exit(1)
 			# raise e
-		
+
 
 	def bookList(self):
 		taglist = self.tagList()
