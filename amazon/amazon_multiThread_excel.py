@@ -21,7 +21,7 @@ logging.basicConfig(handlers=[logging.StreamHandler(sys.stdout), logging.FileHan
     'log.txt', mode='w', encoding='utf-8')], level=logging.INFO, format=fmt)
 
 
-threadPoolSize = 5
+threadPoolSize = 1
 threadPool = queue.Queue()
 bookQueue = queue.Queue()
 threads = []
@@ -58,9 +58,10 @@ def getCookie():
         headers = {'User-Agent': UA}
         response = requests.get(url, headers=headers)
         response.raise_for_status()
+        logging.info(response.headers)
         if not response.headers.get('Set-Cookie') == None:
             cookie.append(response.headers['Set-Cookie'])
-        time.sleep(0.1)
+        time.sleep(1)
     logging.info(cookie)
 
 
@@ -69,7 +70,7 @@ def getThread():
         if threadPool.qsize() < threadPoolSize:
             break
         else:
-            time.sleep(3)
+            time.sleep(1)
 
 
 class Spider:
@@ -189,13 +190,13 @@ class Spider:
                 response.raise_for_status()
             except Exception as e:
                 logging.info(e)
-                time.sleep(30)
+                time.sleep(90)
                 notfind = True
                 continue
             response.encoding = 'utf-8'
             soup = bs4.BeautifulSoup(response.text, 'html.parser')
             if len(soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')) == 0:
-                time.sleep(30)
+                time.sleep(90)
                 _lock.acquire()
                 global count
                 count += 1
