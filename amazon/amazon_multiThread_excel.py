@@ -107,7 +107,6 @@ class Spider:
         writer.writerow(['排名', '书名', '价格', '作者', '出版社',
                          'ASIN', '文件大小', '纸书页数', '语种', '品牌'])
         for book in self.books:
-            # pprint.pprint(book)
             writer.writerow([book['num'], book['name'], book['price'], book['authors'], book['press'],
                              book['asin'], book['size'], book['page'], book['language'], book['brand']])
         file.close()
@@ -117,7 +116,6 @@ class Spider:
         file = open(self.filename, 'a', newline='')
         writer = csv.writer(file)
         for book in self.books:
-            # pprint.pprint(book)
             writer.writerow([book['num'], book['name'], book['price'], book['authors'], book['press'],
                              book['asin'], book['size'], book['page'], book['language'], book['brand']])
         file.close()
@@ -167,7 +165,6 @@ class Spider:
                 'span[class="aok-inline-block zg-item"] > a[class="a-link-normal"]')[0].get('href')
             book['name'] = soup.select('span > div > img')[0].get("alt").replace('・', '·').replace(
                 '•', '·').replace('\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
-            # book['authors'] = soup.select('span[class="a-size-small a-color-base"]')[0].getText().replace('\x85', '...').replace('•', '·')
             if len(soup.select('span[class="p13n-sc-price"]')) > 0:
                 book['price'] = soup.select(
                     'span[class="p13n-sc-price"]')[0].getText().replace('￥', '')
@@ -190,13 +187,13 @@ class Spider:
                 response.raise_for_status()
             except Exception as e:
                 logging.info(e)
-                time.sleep(90)
+                time.sleep(5)
                 notfind = True
                 continue
             response.encoding = 'utf-8'
             soup = bs4.BeautifulSoup(response.text, 'html.parser')
             if len(soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')) == 0:
-                time.sleep(90)
+                time.sleep(5)
                 _lock.acquire()
                 global count
                 count += 1
@@ -206,35 +203,33 @@ class Spider:
                 continue
             else:
                 notfind = False
-        # book['authors'] = soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')[0].getText().replace(
-        #     '\n', '').replace('・', '·').replace('•', '·').replace('\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
         book['authors'] = ''
         for authorTag in soup.select('span[class="author notFaded"]'):
             book['authors'] += authorTag.getText().replace('\n', '').replace('・', '·').replace(
                 '•', '·').replace('\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
-        litags = soup.select('div[class="content"] > ul > li')
-        for li in litags:
-            if li.select('b').__len__() == 0:
-                continue
-            if li.select('b')[0].getText().find('文件大小：') != -1:
-                book['size'] = li.getText()[5:]
-                continue
-            if li.select('b')[0].getText().find('纸书页数：') != -1:
-                book['page'] = li.getText()[5:]
-                continue
-            if li.select('b')[0].getText().find('出版社:') != -1:
-                book['press'] = li.getText()[4:]
-                continue
-            if li.select('b')[0].getText().find('语种：') != -1:
-                book['language'] = li.getText()[3:]
-                continue
-            if li.select('b')[0].getText().find('ASIN:') != -1:
-                book['asin'] = li.getText()[5:]
-                continue
-            if li.select('b')[0].getText().find('品牌:') != -1:
-                book['brand'] = li.getText()[3:].replace('・', '·').replace('•', '·').replace(
+        spanTags = soup.select('div[id="detailBullets_feature_div"] > ul > li > span')
+        for spanTag in spanTags:
+          spans = spanTag.select('span > span')
+          if len(spans) == 2:
+            if '文件大小' in spans[0].getText():
+              book['size'] = spans[1].getText()
+              continue
+            if '纸书页数' in spans[0].getText():
+              book['page'] = spans[1].getText()
+              continue
+            if '出版社' in spans[0].getText():
+              book['press'] = spans[1].getText()
+              continue
+            if '语种' in spans[0].getText():
+              book['language'] = spans[1].getText()
+              continue
+            if 'ASIN' in spans[0].getText():
+              book['asin'] = spans[1].getText()
+              continue
+            if '品牌' in spans[0].getText():
+              book['brand'] = spans[1].getText().replace('・', '·').replace('•', '·').replace(
                     '\u2219', '·').replace('\u25aa', '·').replace('®', '').replace('ë', ' ')
-                continue
+              continue
         self.fulfillBook(book)
         bookQueue.put(book)
         threadPool.get()
