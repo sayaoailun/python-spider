@@ -75,6 +75,8 @@ class Spider:
 			book['language'] = '-'
 		if book.get('isbn') == None:
 			book['isbn'] = '-'
+		if book.get('press') == None:
+			book['press'] = '-'
 
 	def tagList(self):
 		UA = random.choice(self.user_agent_list)

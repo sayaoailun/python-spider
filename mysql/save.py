@@ -170,7 +170,15 @@ def saveToDb(dirPath):
                         row=row, column=jdColumn['版次']).value
                     logging.info(book)
                     if '-' == book['page']:
-                        book['page'] = 0
+                        book['page'] = '0'
+                    if '×' in book['page']:
+                        matchObj = re.match(r'([\d]+)×([\d]+)', book['page'])
+                        book['page'] = str(int(matchObj.group(1)) * int(matchObj.group(2)))
+                    if '页' in book['page']:
+                        matchObj = re.match(r'([\d]+)页', book['page'])
+                        book['page'] = matchObj.group(1)
+                    if 'press' not in book:
+                        book['press'] = '-'
                     if '-' == book['price_mark']:
                         book['price_mark'] = 0
                     if '-' == book['price_real']:
