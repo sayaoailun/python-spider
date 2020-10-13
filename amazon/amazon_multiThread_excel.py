@@ -53,6 +53,8 @@ def getCookie():
         "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
     ]
     url = 'https://www.amazon.cn'
+    _lock.acquire()
+    cookie.clear()
     while len(cookie) < threadPoolSize:
         UA = random.choice(user_agent_list)
         headers = {'User-Agent': UA}
@@ -62,6 +64,7 @@ def getCookie():
         if not response.headers.get('Set-Cookie') == None:
             cookie.append(response.headers['Set-Cookie'])
         time.sleep(1)
+    _lock.release()
     logging.info(cookie)
 
 
@@ -193,6 +196,7 @@ class Spider:
             response.encoding = 'utf-8'
             soup = bs4.BeautifulSoup(response.text, 'html.parser')
             if len(soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')) == 0:
+                getCookie()
                 time.sleep(5)
                 _lock.acquire()
                 global count
