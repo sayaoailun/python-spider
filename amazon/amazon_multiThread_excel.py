@@ -58,12 +58,16 @@ def getCookie():
     while len(cookie) < threadPoolSize:
         UA = random.choice(user_agent_list)
         headers = {'User-Agent': UA}
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        logging.info(response.headers)
-        if not response.headers.get('Set-Cookie') == None:
-            cookie.append(response.headers['Set-Cookie'])
-        time.sleep(1)
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            logging.info(response.headers)
+            if not response.headers.get('Set-Cookie') == None:
+                cookie.append(response.headers['Set-Cookie'])
+            time.sleep(1)
+        except Exception as e:
+            logging.info(e)
+            time.sleep(10)
     _lock.release()
     logging.info(cookie)
 
