@@ -66,7 +66,7 @@ def getCookie():
                 cookie.append(response.headers['Set-Cookie'])
             time.sleep(1)
         except Exception as e:
-            logging.info(e)
+            logging.exception(e)
             time.sleep(10)
     _lock.release()
     logging.info(cookie)
@@ -193,7 +193,7 @@ class Spider:
                 response = requests.get(book['url'], headers=headers)
                 response.raise_for_status()
             except Exception as e:
-                logging.info(e)
+                logging.exception(e)
                 time.sleep(5)
                 notfind = True
                 continue

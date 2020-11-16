@@ -116,7 +116,7 @@ class Spider:
                 priceResponse = requests.get(priceUrl, headers=headers)
                 break;
             except Exception as e:
-                logging.info(e)
+                logging.exception(e)
                 time.sleep(30)
         # priceResponse = requests.get(priceUrl, headers = headers)
         priceResponse.raise_for_status()
@@ -133,7 +133,7 @@ class Spider:
             try:
                 bookResponse.raise_for_status()
             except Exception as e:
-                logging.info(e)
+                logging.exception(e)
                 time.sleep(30)
                 continue
             # bookResponse.raise_for_status()

@@ -153,10 +153,11 @@ class Spider:
 			# 不使用代理
 			UA = random.choice(self.user_agent_list)
 			headers = {'User-Agent': UA}
-			bookresponse = requests.get(bookurl, headers = headers)
+			# bookresponse = requests.get(bookurl, headers = headers)
 			# bookresponse.raise_for_status()
 			try:
-				bookresponse.raise_for_status()
+				bookresponse = requests.get(bookurl, headers = headers)
+                bookresponse.raise_for_status()
 			except Exception as e:
 				if bookresponse.status_code == 404:
 					self.fulfillBook(book)
@@ -165,6 +166,7 @@ class Spider:
 					logging.info(book)
 					return book
 				else:
+                    logging.exception(e)
 					raise e
 			bookresponse.encoding = 'gbk'
 			booksoup = bs4.BeautifulSoup(bookresponse.text, 'html.parser')
