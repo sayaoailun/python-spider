@@ -25,6 +25,7 @@ threadPoolSize = 1
 threadPool = queue.Queue()
 bookQueue = queue.Queue()
 threads = []
+sleepTime = 10
 
 count = 0
 cookie = []
@@ -64,10 +65,10 @@ def getCookie():
             logging.info(response.headers)
             if not response.headers.get('Set-Cookie') == None:
                 cookie.append(response.headers['Set-Cookie'])
-            time.sleep(1)
+            time.sleep(sleepTime)
         except Exception as e:
             logging.exception(e)
-            time.sleep(10)
+            time.sleep(sleepTime)
     _lock.release()
     logging.info(cookie)
 
@@ -77,7 +78,7 @@ def getThread():
         if threadPool.qsize() < threadPoolSize:
             break
         else:
-            time.sleep(1)
+            time.sleep(sleepTime)
 
 
 class Spider:
@@ -194,14 +195,14 @@ class Spider:
                 response.raise_for_status()
             except Exception as e:
                 logging.exception(e)
-                time.sleep(5)
+                time.sleep(sleepTime)
                 notfind = True
                 continue
             response.encoding = 'utf-8'
             soup = bs4.BeautifulSoup(response.text, 'html.parser')
             if len(soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')) == 0:
                 getCookie()
-                time.sleep(5)
+                time.sleep(sleepTime)
                 _lock.acquire()
                 global count
                 count += 1
