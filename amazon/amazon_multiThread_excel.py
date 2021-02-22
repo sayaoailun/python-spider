@@ -31,6 +31,8 @@ count = 0
 cookie = []
 _lock = threading.RLock()
 
+def getSleepTime() :
+    return random.randint(1,10)
 
 def getCookie():
     user_agent_list = [
@@ -65,10 +67,10 @@ def getCookie():
             logging.info(response.headers)
             if not response.headers.get('Set-Cookie') == None:
                 cookie.append(response.headers['Set-Cookie'])
-            time.sleep(sleepTime)
+            time.sleep(getSleepTime())
         except Exception as e:
             logging.exception(e)
-            time.sleep(sleepTime)
+            time.sleep(getSleepTime())
     _lock.release()
     logging.info(cookie)
 
@@ -78,7 +80,7 @@ def getThread():
         if threadPool.qsize() < threadPoolSize:
             break
         else:
-            time.sleep(sleepTime)
+            time.sleep(getSleepTime())
 
 
 class Spider:
@@ -195,14 +197,14 @@ class Spider:
                 response.raise_for_status()
             except Exception as e:
                 logging.exception(e)
-                time.sleep(sleepTime)
+                time.sleep(getSleepTime())
                 notfind = True
                 continue
             response.encoding = 'utf-8'
             soup = bs4.BeautifulSoup(response.text, 'html.parser')
             if len(soup.select('div[class="a-section a-spacing-micro bylineHidden feature"]')) == 0:
                 getCookie()
-                time.sleep(sleepTime)
+                time.sleep(getSleepTime())
                 _lock.acquire()
                 global count
                 count += 1
