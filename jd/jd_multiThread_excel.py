@@ -156,7 +156,7 @@ class Spider:
             # bookResponse.raise_for_status()
             # bookResponse.encoding = 'gbk'
             # logging.info(bookResponse.text)
-            if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul.parameter2.p-parameter-list > li')) > 0:
+            if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul#parameter2.p-parameter-list > li')) > 0:
                 break
             time.sleep(30)
         # UA = random.choice(self.user_agent_list)
@@ -168,7 +168,7 @@ class Spider:
         # bookResponse.encoding = 'gbk'
         # if len(bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul[id="parameter2"] > li')) > 0:
         #   break
-        for x in bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul.parameter2.p-parameter-list > li'):
+        for x in bs4.BeautifulSoup(bookResponse.text, 'html.parser').select('ul#parameter2.p-parameter-list > li'):
             if x.getText().find('ISBN') != -1:
                 book['isbn'] = x.get('title')
                 continue
