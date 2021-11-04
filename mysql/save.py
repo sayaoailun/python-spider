@@ -116,7 +116,7 @@ def saveToDb(dirPath):
                     book['file_size'] = wb[sheet].cell(
                         row=row, column=amazonColumn['文件大小']).value
                     book['page'] = wb[sheet].cell(
-                        row=row, column=amazonColumn['纸书页数']).value
+                        row=row, column=amazonColumn['纸书页数']).value.replace("页", "")
                     book['language'] = wb[sheet].cell(
                         row=row, column=amazonColumn['语种']).value
                     book['brand'] = wb[sheet].cell(
