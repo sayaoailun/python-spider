@@ -126,6 +126,8 @@ def saveToDb(dirPath):
                         book['page'] = 0
                     if '-' == book['price']:
                         book['price'] = 0
+                    if book['press'] == None:
+                        book['press'] = '-'
                     cursor.execute(insert, book)
             wb.close()
         if 'jd' == file['platform']:
